@@ -56,7 +56,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         const response = await api.get("/me");
         setUser(response.data.user);
-      } catch {
+      } catch (error) {
+        console.error("Erro ao carregar usuário salvo:", error);
         removeToken();
         setTokenState(null);
         setUser(null);
@@ -70,34 +71,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   async function signIn({ email, password }: SignInData) {
-    const response = await api.post("/login", {
-      email,
-      password,
-    });
+    try {
+      const response = await api.post("/login", {
+        email,
+        password,
+      });
 
-    const { token, user } = response.data;
+      const { token, user } = response.data;
 
-    setToken(token);
-    setTokenState(token);
-    setUser(user);
+      setToken(token);
+      setTokenState(token);
+      setUser(user);
 
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    } catch (error: any) {
+      console.error("Erro no signIn:", error);
+      console.error("signIn response:", error?.response);
+      console.error("signIn data:", error?.response?.data);
+      throw error;
+    }
   }
 
   async function signUp({ name, email, password }: SignUpData) {
-    const response = await api.post("/register", {
-      name,
-      email,
-      password,
-    });
+    try {
+      const response = await api.post("/register", {
+        name,
+        email,
+        password,
+      });
 
-    const { token, user } = response.data;
+      const { token, user } = response.data;
 
-    setToken(token);
-    setTokenState(token);
-    setUser(user);
+      setToken(token);
+      setTokenState(token);
+      setUser(user);
 
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    } catch (error: any) {
+      console.error("Erro no signUp:", error);
+      console.error("signUp response:", error?.response);
+      console.error("signUp data:", error?.response?.data);
+      console.error("signUp status:", error?.response?.status);
+      console.error("signUp baseURL:", api.defaults.baseURL);
+      throw error;
+    }
   }
 
   function signOut() {

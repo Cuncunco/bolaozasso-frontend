@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
+import { useTheme } from "../contexts/ThemeContext";
 
 const tabs = [
   { to: "/profile", label: "Perfil", icon: "👤" },
@@ -10,12 +11,40 @@ const tabs = [
 ];
 
 export default function AppLayout() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const pageBackground = isDark
+    ? "linear-gradient(180deg, #0b2219 0%, #0f3125 45%, #0b2219 100%)"
+    : "linear-gradient(180deg, #eef3f8 0%, #e4ebf3 45%, #dde6f0 100%)";
+
+  const shellBackground = isDark ? "#103528" : "#ffffff";
+
+  const navBackground = isDark
+    ? "linear-gradient(180deg, #11241c 0%, #0f1d17 100%)"
+    : "linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%)";
+
+  const contentBackground = isDark
+    ? "radial-gradient(circle at top, #14533c 0%, #103d2e 35%, #0d2f24 100%)"
+    : "radial-gradient(circle at top, #14533c 0%, #103d2e 35%, #14533c 100%)";
+
+  const borderColor = isDark
+    ? "1px solid rgba(247, 221, 67, 0.10)"
+    : "1px solid rgba(15, 23, 42, 0.08)";
+
+  const navBorder = isDark
+    ? "1px solid rgba(247, 221, 67, 0.14)"
+    : "1px solid rgba(15, 23, 42, 0.08)";
+
+  const activeColor = isDark ? "#F7DD43" : "#0f172a";
+  const inactiveColor = isDark ? "#c7d2cc" : "#475569";
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #06140f 0%, #081c15 45%, #071711 100%)",
+        background: pageBackground,
         padding: "24px",
       }}
     >
@@ -25,22 +54,24 @@ export default function AppLayout() {
           maxWidth: "1500px",
           minHeight: "calc(100vh - 48px)",
           margin: "0 auto",
-          backgroundColor: "#0b2219",
+          backgroundColor: shellBackground,
           borderRadius: "24px",
           overflow: "hidden",
-          boxShadow: "0 18px 40px rgba(0,0,0,0.45)",
+          boxShadow: isDark
+            ? "0 18px 40px rgba(0,0,0,0.35)"
+            : "0 18px 40px rgba(15,23,42,0.12)",
           display: "flex",
           flexDirection: "column",
-          border: "1px solid rgba(247, 221, 67, 0.08)",
+          border: borderColor,
+          position: "relative",
         }}
       >
         <div
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            padding: "16px 24px 0 24px",
-            background:
-              "linear-gradient(180deg, #101714 0%, #0c110f 100%)",
+            position: "absolute",
+            top: "16px",
+            right: "20px",
+            zIndex: 20,
           }}
         >
           <ThemeToggle />
@@ -48,14 +79,15 @@ export default function AppLayout() {
 
         <nav
           style={{
-            height: "76px",
-            background:
-              "linear-gradient(180deg, #101714 0%, #0c110f 100%)",
-            borderBottom: "1px solid rgba(247, 221, 67, 0.12)",
+            height: "82px",
+            background: navBackground,
+            borderBottom: navBorder,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-around",
             flexShrink: 0,
+            paddingRight: "140px",
+            paddingLeft: "12px",
           }}
         >
           {tabs.map((tab) => (
@@ -70,7 +102,7 @@ export default function AppLayout() {
                 gap: "4px",
                 minWidth: "72px",
                 textDecoration: "none",
-                color: isActive ? "#F7DD43" : "#B7C2BC",
+                color: isActive ? activeColor : inactiveColor,
                 fontSize: "13px",
                 fontWeight: 700,
                 transition: "0.2s ease",
@@ -88,8 +120,8 @@ export default function AppLayout() {
           style={{
             flex: 1,
             padding: "24px",
-            background:
-              "radial-gradient(circle at top, #0d2b20 0%, #0a2018 30%, #081c15 100%)",
+            background: contentBackground,
+            color: textColor,
           }}
         >
           <Outlet />

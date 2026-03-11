@@ -25,6 +25,12 @@ type GuessState = {
   };
 };
 
+type GuessResponseItem = {
+  gameId: string;
+  firstTeamPoints: number;
+  secondTeamPoints: number;
+};
+
 export default function PoolDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -68,7 +74,6 @@ export default function PoolDetails() {
 
   async function fetchPoolDetails(poolId: string) {
     try {
-      setIsLoading(true);
       setMessage("");
 
       const response = await api.get(`/pools/${poolId}`);
@@ -80,15 +85,43 @@ export default function PoolDetails() {
 
       setMessage(msg);
       setPoolDetails(null);
-    } finally {
-      setIsLoading(false);
+    }
+  }
+
+  async function fetchGuesses(poolId: string) {
+    try {
+      const response = await api.get(`/pools/${poolId}/guesses`);
+
+      const formattedGuesses = (response.data.guesses as GuessResponseItem[]).reduce(
+        (acc: GuessState, guess) => {
+          acc[guess.gameId] = {
+            firstTeamPoints: String(guess.firstTeamPoints),
+            secondTeamPoints: String(guess.secondTeamPoints),
+          };
+          return acc;
+        },
+        {}
+      );
+
+      setGuesses(formattedGuesses);
+    } catch (error: any) {
+      console.error("Erro ao carregar palpites:", error);
     }
   }
 
   useEffect(() => {
-    if (id) {
-      fetchPoolDetails(id);
+    async function loadData() {
+      if (!id) return;
+
+      try {
+        setIsLoading(true);
+        await Promise.all([fetchPoolDetails(id), fetchGuesses(id)]);
+      } finally {
+        setIsLoading(false);
+      }
     }
+
+    loadData();
   }, [id]);
 
   function handleChangeGuess(
@@ -128,6 +161,7 @@ export default function PoolDetails() {
       });
 
       setMessage("Palpite salvo com sucesso.");
+      await fetchGuesses(id);
     } catch (error: any) {
       const msg =
         error?.response?.data?.message ||
@@ -332,19 +366,6 @@ export default function PoolDetails() {
               {isDeleting ? "Apagando..." : "Apagar bolão"}
             </button>
           )}
-        </div>
-
-        <div
-          style={{
-            backgroundColor: "#0d241b",
-            border: "1px solid #294136",
-            borderRadius: "16px",
-            padding: "18px",
-            marginBottom: "20px",
-            color: "#fff",
-          }}
-        >
-          
         </div>
 
         {poolDetails._count.participants > 0 ? (

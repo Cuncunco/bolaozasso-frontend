@@ -6,26 +6,24 @@ export default function Login() {
   const navigate = useNavigate();
   const { signIn } = useContext(AuthContext);
 
-  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function handleSignIn(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
     try {
       setIsLoading(true);
       setErrorMessage("");
 
-      await signIn({
-        email,
-        password,
-      });
+      await signIn({ email, password });
 
       navigate("/pools", { replace: true });
-    } catch (error) {
+    } catch {
       setErrorMessage("E-mail ou senha inválidos");
     } finally {
       setIsLoading(false);
@@ -33,176 +31,164 @@ export default function Login() {
   }
 
   return (
+    <MainLayout>
+      <img src="/logo.svg" alt="Bolãozasso" style={logoStyle} />
+
+      <Title>Entrar</Title>
+      <Subtitle>Entre para acessar seus bolões.</Subtitle>
+
+      <form onSubmit={handleSignIn} style={formStyle}>
+        <input
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={inputStyle}
+        />
+
+        <div style={{ position: "relative" }}>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={inputStyle}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            style={showPasswordStyle}
+          >
+            {showPassword ? "Ocultar" : "Mostrar"}
+          </button>
+        </div>
+
+        <button type="submit" disabled={isLoading} style={primaryButton}>
+          {isLoading ? "Entrando..." : "ENTRAR"}
+        </button>
+
+        <Link to="/register" style={secondaryButton}>
+          CRIAR CONTA
+        </Link>
+      </form>
+
+      {errorMessage && <ErrorBox>{errorMessage}</ErrorBox>}
+    </MainLayout>
+  );
+}
+
+function MainLayout({ children }: any) {
+  return (
     <main
       style={{
         minHeight: "100vh",
-        minWidth: "100vw",
         backgroundColor: "#111827",
-        padding: "28px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        padding: "24px",
       }}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "520px",
+          maxWidth: "480px",
+          backgroundColor: "#1f2937",
+          padding: "40px",
+          borderRadius: "16px",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <img
-          src="/logo.svg"
-          alt="Bolãozasso"
-          style={{
-            width: "300px",
-            maxWidth: "100%",
-            height: "auto",
-            marginBottom: "24px",
-          }}
-        />
-
-        <form
-          onSubmit={handleSignIn}
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-            marginTop: "8px",
-          }}
-        >
-          <input
-            type="email"
-            placeholder="E-mail"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: "10px",
-              border: "1px solid #374151",
-              backgroundColor: "#1f2937",
-              color: "#ffffff",
-              fontSize: "16px",
-              outline: "none",
-              boxSizing: "border-box",
-            }}
-          />
-
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-            }}
-          >
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Senha"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "14px 48px 14px 16px",
-                borderRadius: "10px",
-                border: "1px solid #374151",
-                backgroundColor: "#1f2937",
-                color: "#ffffff",
-                fontSize: "16px",
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                border: "none",
-                background: "transparent",
-                color: "#9ca3af",
-                cursor: "pointer",
-                fontSize: "14px",
-              }}
-            >
-              {showPassword ? "Ocultar" : "Mostrar"}
-            </button>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: "10px",
-              border: "none",
-              backgroundColor: "#eee712",
-              color: "#111827",
-              fontWeight: 700,
-              fontSize: "16px",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              opacity: isLoading ? 0.7 : 1,
-            }}
-          >
-            {isLoading ? "Entrando..." : "ENTRAR"}
-          </button>
-
-          <Link
-            to="/register"
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: "10px",
-              border: "1px solid #4b5563",
-              backgroundColor: "transparent",
-              color: "#ffffff",
-              fontWeight: 700,
-              fontSize: "16px",
-              textAlign: "center",
-              textDecoration: "none",
-              boxSizing: "border-box",
-            }}
-          >
-            CRIAR CONTA
-          </Link>
-        </form>
-
-        {errorMessage && (
-          <div
-            style={{
-              width: "100%",
-              marginTop: "16px",
-              padding: "12px 14px",
-              borderRadius: "10px",
-              backgroundColor: "#7f1d1d",
-              color: "#fecaca",
-              textAlign: "center",
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
-
-        <p
-          style={{
-            color: "#9ca3af",
-            textAlign: "center",
-            marginTop: "24px",
-            fontSize: "14px",
-          }}
-        >
-          Use seu e-mail e senha cadastrados.
-        </p>
+        {children}
       </div>
     </main>
   );
 }
+
+function ErrorBox({ children }: any) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        marginTop: "16px",
+        padding: "12px",
+        borderRadius: "10px",
+        backgroundColor: "#7f1d1d",
+        color: "#fecaca",
+        textAlign: "center",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+
+const Title = ({ children }: any) => (
+  <h1 style={{ color: "#fff", fontSize: "28px", marginBottom: "6px" }}>
+    {children}
+  </h1>
+);
+
+const Subtitle = ({ children }: any) => (
+  <p style={{ color: "#9ca3af", marginBottom: "24px" }}>{children}</p>
+);
+
+const logoStyle: React.CSSProperties = {
+  width: "220px",
+  marginBottom: "20px",
+};
+
+const formStyle: React.CSSProperties = {
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "10px",
+  border: "1px solid #374151",
+  backgroundColor: "#111827",
+  color: "#fff",
+  fontSize: "16px",
+};
+
+const primaryButton: React.CSSProperties = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "10px",
+  border: "none",
+  backgroundColor: "#F7DD43",
+  color: "#111827",
+  fontWeight: 700,
+  cursor: "pointer",
+};
+
+const secondaryButton: React.CSSProperties = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "10px",
+  border: "1px solid #4b5563",
+  textAlign: "center",
+  textDecoration: "none",
+  color: "#fff",
+  fontWeight: 700,
+};
+
+const showPasswordStyle: React.CSSProperties = {
+  position: "absolute",
+  right: "12px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  border: "none",
+  background: "transparent",
+  color: "#9ca3af",
+  cursor: "pointer",
+};
