@@ -1,4 +1,4 @@
-const flagModules = import.meta.glob("../assets/icon-*.svg", {
+const flagModules = import.meta.glob("/public/assets/icon-*.svg", {
   eager: true,
   import: "default",
 }) as Record<string, string>;

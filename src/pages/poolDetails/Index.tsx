@@ -92,16 +92,15 @@ export default function PoolDetails() {
     try {
       const response = await api.get(`/pools/${poolId}/guesses`);
 
-      const formattedGuesses = (response.data.guesses as GuessResponseItem[]).reduce(
-        (acc: GuessState, guess) => {
-          acc[guess.gameId] = {
-            firstTeamPoints: String(guess.firstTeamPoints),
-            secondTeamPoints: String(guess.secondTeamPoints),
-          };
-          return acc;
-        },
-        {}
-      );
+      const formattedGuesses = (
+        response.data.guesses as GuessResponseItem[]
+      ).reduce((acc: GuessState, guess) => {
+        acc[guess.gameId] = {
+          firstTeamPoints: String(guess.firstTeamPoints),
+          secondTeamPoints: String(guess.secondTeamPoints),
+        };
+        return acc;
+      }, {});
 
       setGuesses(formattedGuesses);
     } catch (error: any) {
@@ -392,15 +391,11 @@ export default function PoolDetails() {
               </button>
 
               <button
-                onClick={() => setOptionSelected("Ranking do grupo")}
+                onClick={() => navigate(`/pools/${id}/ranking`)}
                 style={{
                   ...tabButton,
-                  backgroundColor:
-                    optionSelected === "Ranking do grupo"
-                      ? "#F7DD43"
-                      : "#15281f",
-                  color:
-                    optionSelected === "Ranking do grupo" ? "#132018" : "#fff",
+                  backgroundColor: "#15281f",
+                  color: "#fff",
                 }}
               >
                 Ranking do grupo

@@ -10,6 +10,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { PublicRoute } from "./PublicRoute";
 import AppLayout from "../layout/AppLayout";
 import PoolDetails from "../pages/poolDetails/Index";
+import Ranking from "../pages/ranking/Index";
 
 export default function AppRoutes() {
   return (
@@ -42,6 +43,7 @@ export default function AppRoutes() {
         <Route path="/" element={<Navigate to="/pools" replace />} />
         <Route path="/pools" element={<Pools />} />
         <Route path="/pools/:id" element={<PoolDetails />} />
+        <Route path="/pools/:id/ranking" element={<Ranking />} />
         <Route path="/new" element={<NewPool />} />
         <Route path="/find" element={<Find />} />
         <Route path="/calendar" element={<Calendar />} />
