@@ -41,92 +41,181 @@ export default function AppLayout() {
   const textColor = isDark ? "#ffffff" : "#0f172a";
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: pageBackground,
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1500px",
-          minHeight: "calc(100vh - 48px)",
-          margin: "0 auto",
-          backgroundColor: shellBackground,
-          borderRadius: "24px",
-          overflow: "hidden",
-          boxShadow: isDark
-            ? "0 18px 40px rgba(0,0,0,0.35)"
-            : "0 18px 40px rgba(15,23,42,0.12)",
-          display: "flex",
-          flexDirection: "column",
-          border: borderColor,
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: "16px",
-            right: "20px",
-            zIndex: 20,
-          }}
-        >
-          <ThemeToggle />
-        </div>
+    <>
+      {/* Estilos responsivos injetados via <style> */}
+      <style>{`
+        .app-page-wrapper {
+          min-height: 100vh;
+          background: ${pageBackground};
+          padding: 24px;
+        }
 
-        <nav
-          style={{
-            height: "82px",
-            background: navBackground,
-            borderBottom: navBorder,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-around",
-            flexShrink: 0,
-            paddingRight: "140px",
-            paddingLeft: "12px",
-          }}
-        >
-          {tabs.map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              style={({ isActive }) => ({
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "4px",
-                minWidth: "72px",
-                textDecoration: "none",
-                color: isActive ? activeColor : inactiveColor,
-                fontSize: "13px",
-                fontWeight: 700,
-                transition: "0.2s ease",
-              })}
-            >
-              <span style={{ fontSize: "22px", lineHeight: 1 }}>
-                {tab.icon}
-              </span>
-              <span>{tab.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+        .app-shell {
+          width: 100%;
+          max-width: 1500px;
+          min-height: calc(100vh - 48px);
+          margin: 0 auto;
+          background-color: ${shellBackground};
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: ${
+            isDark
+              ? "0 18px 40px rgba(0,0,0,0.35)"
+              : "0 18px 40px rgba(15,23,42,0.12)"
+          };
+          display: flex;
+          flex-direction: column;
+          border: ${borderColor};
+          position: relative;
+        }
 
-        <div
-          style={{
-            flex: 1,
-            padding: "24px",
-            background: contentBackground,
-            color: textColor,
-          }}
-        >
-          <Outlet />
+        .theme-toggle-wrapper {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 20;
+        }
+
+        .app-nav {
+          height: 82px;
+          background: ${navBackground};
+          border-bottom: ${navBorder};
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          flex-shrink: 0;
+          padding: 0 60px 0 12px;
+        }
+
+        .nav-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          min-width: 64px;
+          text-decoration: none;
+          font-size: 13px;
+          font-weight: 700;
+          transition: color 0.2s ease, transform 0.15s ease;
+        }
+
+        .nav-link:hover {
+          transform: translateY(-2px);
+        }
+
+        .nav-icon {
+          font-size: 22px;
+          line-height: 1;
+        }
+
+        .app-content {
+          flex: 1;
+          padding: 24px;
+          background: ${contentBackground};
+          color: ${textColor};
+        }
+
+        /* ── Tablet ── */
+        @media (max-width: 768px) {
+          .app-page-wrapper {
+            padding: 12px;
+          }
+
+          .app-shell {
+            border-radius: 16px;
+            min-height: calc(100vh - 24px);
+          }
+
+          .app-nav {
+            height: 70px;
+            padding: 0 52px 0 8px;
+          }
+
+          .nav-link {
+            font-size: 11px;
+            min-width: 52px;
+            gap: 3px;
+          }
+
+          .nav-icon {
+            font-size: 20px;
+          }
+
+          .app-content {
+            padding: 16px;
+          }
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 480px) {
+          .app-page-wrapper {
+            padding: 0;
+          }
+
+          .app-shell {
+            border-radius: 0;
+            min-height: 100vh;
+            box-shadow: none;
+          }
+
+          .theme-toggle-wrapper {
+            top: 12px;
+            right: 10px;
+          }
+
+          .app-nav {
+            height: 64px;
+            padding: 0 44px 0 4px;
+            justify-content: space-evenly;
+          }
+
+          .nav-link {
+            font-size: 10px;
+            min-width: 44px;
+            gap: 2px;
+          }
+
+          .nav-icon {
+            font-size: 18px;
+          }
+
+          .app-content {
+            padding: 12px;
+          }
+        }
+      `}</style>
+
+      <div className="app-page-wrapper">
+        <div className="app-shell">
+          {/* Botão de tema */}
+          <div className="theme-toggle-wrapper">
+            <ThemeToggle />
+          </div>
+
+          {/* Nav */}
+          <nav className="app-nav">
+            {tabs.map((tab) => (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                className="nav-link"
+                style={({ isActive }) => ({
+                  color: isActive ? activeColor : inactiveColor,
+                })}
+              >
+                <span className="nav-icon">{tab.icon}</span>
+                <span>{tab.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Conteúdo */}
+          <div className="app-content">
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
