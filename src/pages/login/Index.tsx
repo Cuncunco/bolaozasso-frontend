@@ -12,14 +12,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  
 
   async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     try {
       setIsLoading(true);
-      setErrorMessage("");
 
       await signIn({ email, password });
 
@@ -105,24 +104,6 @@ function MainLayout({ children }: any) {
         {children}
       </div>
     </main>
-  );
-}
-
-function ErrorBox({ children }: any) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        marginTop: "16px",
-        padding: "12px",
-        borderRadius: "10px",
-        backgroundColor: "#7f1d1d",
-        color: "#fecaca",
-        textAlign: "center",
-      }}
-    >
-      {children}
-    </div>
   );
 }
 
