@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/Api";
+import toast from "react-hot-toast";
 
 type PoolProps = {
   id: string;
@@ -17,18 +18,17 @@ export default function Pools() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [pools, setPools] = useState<PoolProps[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
+  
 
   const fetchPools = useCallback(async () => {
     try {
       setIsLoading(true);
-      setErrorMessage("");
-
+     
       const response = await api.get("/pools");
       setPools(response.data.pools ?? []);
     } catch (error) {
       console.log("FETCH POOLS ERROR:", error);
-      setErrorMessage("Não foi possível carregar os bolões");
+      toast.error("Não foi possível carregar os bolões");
     } finally {
       setIsLoading(false);
     }
@@ -89,19 +89,8 @@ export default function Pools() {
           </button>
         </header>
 
-        {errorMessage && (
-          <div
-            style={{
-              marginBottom: "16px",
-              padding: "12px 14px",
-              borderRadius: "10px",
-              backgroundColor: "#7f1d1d",
-              color: "#fecaca",
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
+        
+        
 
         {isLoading ? (
           <div

@@ -4,6 +4,7 @@ import { api } from "../../services/Api";
 import { calendar } from "../../constants/Calendar";
 import { useAuth } from "../../hooks/UseAuth";
 import { GuessGameCard } from "../../components/GuessGameCard";
+import toast from "react-hot-toast";
 
 type PoolDetailsType = {
   id: string;
@@ -45,12 +46,22 @@ export default function PoolDetails() {
   const [isSubmitting, setIsSubmitting] = useState<string | null>(null);
 
   const [poolDetails, setPoolDetails] = useState<PoolDetailsType | null>(null);
-  const [message, setMessage] = useState("");
   const [guesses, setGuesses] = useState<GuessState>({});
 
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [officialFirstTeamPoints, setOfficialFirstTeamPoints] = useState("");
   const [officialSecondTeamPoints, setOfficialSecondTeamPoints] = useState("");
+
+  const [results, setResults] = useState<{
+  [gameId: string]: {
+    firstTeamPoints: number;
+    secondTeamPoints: number;
+  };
+}>({});
+
+
+const selectedResult = selectedGameId ? results[selectedGameId] : null;
+const hasSelectedResult = !!selectedResult;
 
   const userId =
     (user as any)?.id ??
@@ -74,7 +85,6 @@ export default function PoolDetails() {
 
   async function fetchPoolDetails(poolId: string) {
     try {
-      setMessage("");
 
       const response = await api.get(`/pools/${poolId}`);
       setPoolDetails(response.data.pool);
@@ -83,7 +93,7 @@ export default function PoolDetails() {
         error?.response?.data?.message ??
         "Não foi possível carregar os detalhes do bolão";
 
-      setMessage(msg);
+      toast.error(msg);
       setPoolDetails(null);
     }
   }
@@ -109,19 +119,23 @@ export default function PoolDetails() {
   }
 
   useEffect(() => {
-    async function loadData() {
-      if (!id) return;
+  async function loadData() {
+    if (!id) return;
 
-      try {
-        setIsLoading(true);
-        await Promise.all([fetchPoolDetails(id), fetchGuesses(id)]);
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      setIsLoading(true);
+      await Promise.all([
+        fetchPoolDetails(id),
+        fetchGuesses(id),
+        fetchResults(id),
+      ]);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    loadData();
-  }, [id]);
+  loadData();
+}, [id]);
 
   function handleChangeGuess(
     gameId: string,
@@ -146,27 +160,27 @@ export default function PoolDetails() {
     const current = guesses[gameId];
 
     if (!current?.firstTeamPoints || !current?.secondTeamPoints) {
-      setMessage("Preencha os dois placares.");
+      toast.error("Preencha os dois placares.");
       return;
     }
 
     try {
       setIsSubmitting(gameId);
-      setMessage("");
+     
 
       await api.post(`/pools/${id}/games/${gameId}/guesses`, {
         firstTeamPoints: Number(current.firstTeamPoints),
         secondTeamPoints: Number(current.secondTeamPoints),
       });
 
-      setMessage("Palpite salvo com sucesso.");
+      toast.success("Palpite salvo com sucesso.");
       await fetchGuesses(id);
     } catch (error: any) {
       const msg =
         error?.response?.data?.message ||
         "Não foi possível salvar o palpite.";
 
-      setMessage(msg);
+     toast.error(msg);
     } finally {
       setIsSubmitting(null);
     }
@@ -185,35 +199,36 @@ export default function PoolDetails() {
   }
 
   async function handleSetOfficialResult() {
-    if (!id || !selectedGameId) return;
+  if (!id || !selectedGameId) return;
 
-    if (!officialFirstTeamPoints || !officialSecondTeamPoints) {
-      setMessage("Preencha os dois placares para definir o resultado.");
-      return;
-    }
-
-    try {
-      setIsSubmitting(`result-${selectedGameId}`);
-      setMessage("");
-
-      await api.post(`/pools/${id}/results`, {
-        gameId: selectedGameId,
-        firstTeamPoints: Number(officialFirstTeamPoints),
-        secondTeamPoints: Number(officialSecondTeamPoints),
-      });
-
-      setMessage("Placar oficial definido com sucesso.");
-      closeResultModal();
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message ||
-        "Não foi possível definir o placar oficial.";
-
-      setMessage(msg);
-    } finally {
-      setIsSubmitting(null);
-    }
+  if (!officialFirstTeamPoints || !officialSecondTeamPoints) {
+    toast.error("Preencha os dois placares para definir o resultado.");
+    return;
   }
+
+  try {
+    setIsSubmitting(`result-${selectedGameId}`);
+
+    await api.post(`/pools/${id}/results`, {
+      gameId: selectedGameId,
+      firstTeamPoints: Number(officialFirstTeamPoints),
+      secondTeamPoints: Number(officialSecondTeamPoints),
+    });
+
+    toast.success("Placar oficial definido com sucesso.");
+
+    await fetchResults(id); 
+    closeResultModal();
+  } catch (error: any) {
+    const msg =
+      error?.response?.data?.message ||
+      "Não foi possível definir o placar oficial.";
+
+    toast.error(msg);
+  } finally {
+    setIsSubmitting(null);
+  }
+}
 
   async function handleDeletePool() {
     if (!poolDetails?.id) return;
@@ -226,7 +241,7 @@ export default function PoolDetails() {
 
     try {
       setIsDeleting(true);
-      setMessage("");
+     
 
       await api.delete(`/pools/${poolDetails.id}`);
 
@@ -235,7 +250,7 @@ export default function PoolDetails() {
       const msg =
         error?.response?.data?.message || "Não foi possível apagar o bolão";
 
-      setMessage(msg);
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -243,15 +258,15 @@ export default function PoolDetails() {
 
   async function handleShareCode() {
     if (!poolDetails?.code) {
-      setMessage("Código do bolão não disponível.");
+      toast.error("Código do bolão não disponível.");
       return;
     }
 
     try {
       await navigator.clipboard.writeText(poolDetails.code);
-      setMessage("Código copiado para a área de transferência.");
+      toast.success("Código copiado para a área de transferência.");
     } catch {
-      setMessage(`Código do bolão: ${poolDetails.code}`);
+     toast.success(`Código do bolão: ${poolDetails.code}`);
     }
   }
 
@@ -269,19 +284,6 @@ export default function PoolDetails() {
     return (
       <main style={{ color: "#fff" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          {message && (
-            <div
-              style={{
-                marginBottom: "16px",
-                padding: "12px 14px",
-                borderRadius: "10px",
-                backgroundColor: "#7f1d1d",
-                color: "#fecaca",
-              }}
-            >
-              {message}
-            </div>
-          )}
           <button onClick={() => navigate("/pools")} style={secondaryButton}>
             Voltar para bolões
           </button>
@@ -289,6 +291,27 @@ export default function PoolDetails() {
       </main>
     );
   }
+
+  async function fetchResults(poolId: string) {
+  try {
+    const response = await api.get(`/pools/${poolId}/results`);
+
+    const formatted = (response.data.results || []).reduce(
+      (acc: any, result: any) => {
+        acc[result.gameId] = {
+          firstTeamPoints: result.firstTeamPoints,
+          secondTeamPoints: result.secondTeamPoints,
+        };
+        return acc;
+      },
+      {}
+    );
+
+    setResults(formatted);
+  } catch (error) {
+    console.error("Erro ao buscar resultados:", error);
+  }
+}
 
   return (
     <main style={{ color: "#fff" }}>
@@ -321,19 +344,9 @@ export default function PoolDetails() {
           </div>
         </div>
 
-        {message && (
-          <div
-            style={{
-              marginBottom: "16px",
-              padding: "12px 14px",
-              borderRadius: "10px",
-              backgroundColor: "#182c22",
-              color: "#fff",
-            }}
-          >
-            {message}
-          </div>
-        )}
+        
+          
+        
 
         <div
           style={{
@@ -405,6 +418,8 @@ export default function PoolDetails() {
             {optionSelected === "Seus palpites" ? (
               <div style={{ display: "grid", gap: "18px" }}>
                 {games.map((game) => {
+                  const result = results[game.id];
+                  const hasResult = !!result; 
                   const current = guesses[game.id] ?? {
                     firstTeamPoints: "",
                     secondTeamPoints: "",
@@ -412,28 +427,33 @@ export default function PoolDetails() {
 
                   return (
                     <GuessGameCard
-                      key={game.id}
-                      day={game.day}
-                      date={game.date}
-                      hour={game.hour}
-                      player1={game.player1}
-                      player2={game.player2}
-                      firstTeamPoints={current.firstTeamPoints}
-                      secondTeamPoints={current.secondTeamPoints}
-                      onChangeFirst={(value) =>
-                        handleChangeGuess(game.id, "firstTeamPoints", value)
-                      }
-                      onChangeSecond={(value) =>
-                        handleChangeGuess(game.id, "secondTeamPoints", value)
-                      }
-                      onSaveGuess={() => handleSaveGuess(game.id)}
-                      onSetResult={() => openResultModal(game.id)}
-                      isSaving={
-                        isSubmitting === game.id ||
-                        isSubmitting === `result-${game.id}`
-                      }
-                      isOwner={isOwner}
-                    />
+                  key={game.id}
+                  day={game.day}
+                  date={game.date}
+                  hour={game.hour}
+                  player1={game.player1}
+                  player2={game.player2}
+                  firstTeamPoints={hasResult ? String(result.firstTeamPoints) : current.firstTeamPoints}
+                  secondTeamPoints={hasResult ? String(result.secondTeamPoints) : current.secondTeamPoints}
+
+                  onChangeFirst={(value) =>
+                    !hasResult && handleChangeGuess(game.id, "firstTeamPoints", value)
+                  }
+                  onChangeSecond={(value) =>
+                    !hasResult && handleChangeGuess(game.id, "secondTeamPoints", value)
+                  }
+
+                  onSaveGuess={() => !hasResult && handleSaveGuess(game.id)}
+                  onSetResult={() => !hasResult && openResultModal(game.id)}
+
+                  isSaving={
+                    isSubmitting === game.id ||
+                    isSubmitting === `result-${game.id}`
+                  }
+
+                  isOwner={isOwner}
+                  hasResult={hasResult} 
+                />
                   );
                 })}
               </div>
@@ -514,7 +534,22 @@ export default function PoolDetails() {
                 marginBottom: "22px",
               }}
             >
-              <input
+              {hasSelectedResult ? (
+  <div style={{
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "24px",
+    fontWeight: "bold",
+  }}>
+    <span>{selectedResult?.firstTeamPoints}</span>
+    <span>x</span>
+    <span>{selectedResult?.secondTeamPoints}</span>
+  </div>
+) : (
+  <>
+    <input
                 value={officialFirstTeamPoints}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -523,9 +558,11 @@ export default function PoolDetails() {
                 inputMode="numeric"
                 placeholder="0"
                 style={modalInput}
+                disabled={
+  isSubmitting === `result-${selectedGameId}` || hasSelectedResult
+}
               />
-
-              <input
+   <input
                 value={officialSecondTeamPoints}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -534,7 +571,15 @@ export default function PoolDetails() {
                 inputMode="numeric"
                 placeholder="0"
                 style={modalInput}
+                disabled={
+  isSubmitting === `result-${selectedGameId}` || hasSelectedResult
+}
               />
+  </>
+)}
+              
+
+              
             </div>
 
             <div

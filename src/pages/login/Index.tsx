@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function Login() {
 
       navigate("/pools", { replace: true });
     } catch {
-      setErrorMessage("E-mail ou senha inválidos");
+      toast.error("E-mail ou senha inválidos");
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +73,6 @@ export default function Login() {
           CRIAR CONTA
         </Link>
       </form>
-
-      {errorMessage && <ErrorBox>{errorMessage}</ErrorBox>}
     </MainLayout>
   );
 }

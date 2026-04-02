@@ -1,37 +1,32 @@
 import { useState } from "react";
 import { api } from "../../services/Api";
+import toast from "react-hot-toast";
 
 export default function NewPool() {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
   async function handlePoolCreate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!title.trim()) {
-      setSuccessMessage("");
-      setErrorMessage("Informe um nome para seu bolão");
+      toast.error("Informe um nome para seu bolão");
       return;
     }
 
     try {
       setIsLoading(true);
-      setErrorMessage("");
-      setSuccessMessage("");
+    
 
       await api.post("/pools", { title });
 
       setTitle("");
-      setSuccessMessage("Bolão criado com sucesso");
+      toast.success("Bolão criado com sucesso");
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || "Não foi possível criar o bolão.";
+  const message =
+    error?.response?.data?.message || "Não foi possível criar o bolão.";
 
-      setErrorMessage(message);
-      setSuccessMessage("");
-    } finally {
+  toast.error(message);
+} finally {
       setIsLoading(false);
     }
   }
@@ -126,39 +121,9 @@ export default function NewPool() {
           </button>
         </form>
 
-        {errorMessage && (
-          <div
-            style={{
-              marginTop: "16px",
-              padding: "12px 14px",
-              borderRadius: "10px",
-              backgroundColor: "#7f1d1d",
-              color: "#fecaca",
-              textAlign: "center",
-              width: "100%",
-              maxWidth: "500px",
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
+        
 
-        {successMessage && (
-          <div
-            style={{
-              marginTop: "16px",
-              padding: "12px 14px",
-              borderRadius: "10px",
-              backgroundColor: "#166534",
-              color: "#dcfce7",
-              textAlign: "center",
-              width: "100%",
-              maxWidth: "500px",
-            }}
-          >
-            {successMessage}
-          </div>
-        )}
+        
 
         <p
           style={{

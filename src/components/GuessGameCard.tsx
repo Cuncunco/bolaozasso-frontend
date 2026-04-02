@@ -14,6 +14,7 @@ type GameCardProps = {
   onSetResult?: () => void;
   isSaving?: boolean;
   isOwner?: boolean;
+  hasResult?: boolean;
 };
 
 export function GuessGameCard({

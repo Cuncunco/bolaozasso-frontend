@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { api } from "../../services/Api";
 import { useAuth } from "../../hooks/UseAuth";
+import toast from "react-hot-toast";
 
 export default function Profile() {
   const { user, signOut } = useAuth();
@@ -57,12 +58,11 @@ export default function Profile() {
 
       await api.put("/users/profile", { name, avatarUrl });
 
-      setMessage("Perfil atualizado com sucesso.");
-      window.location.reload();
+      toast.success("Perfil atualizado com sucesso.");
     } catch (error: any) {
       const msg =
         error?.response?.data?.message || "Não foi possível atualizar o perfil.";
-      setMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }

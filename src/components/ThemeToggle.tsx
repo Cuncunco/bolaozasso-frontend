@@ -12,11 +12,11 @@ export default function ThemeToggle() {
         border: "none",
         cursor: "pointer",
         fontWeight: 600,
-        background: theme === "dark" ? "#f7dd43" : "#222",
+        background: theme === "dark" ? "#ffffff" : "#222",
         color: theme === "dark" ? "#000" : "#fff",
       }}
     >
-      {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      {theme === "dark" ? "☀️" : "🌙"}
     </button>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/Api";
+import toast from "react-hot-toast";
 
 export default function Find() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +22,12 @@ export default function Find() {
       const cleanCode = code.trim().toUpperCase();
 
       if (!cleanCode) {
-        setErrorMessage("Informe o código");
-        return;
-      }
-
+      toast.error("Informe o código");
+      return;
+    }
       await api.post("/pools/join", { code: cleanCode });
 
-      setSuccessMessage("Você entrou no bolão com sucesso");
+      toast.success("Você entrou no bolão com sucesso");
       setCode("");
 
       setTimeout(() => {
@@ -40,21 +40,22 @@ export default function Find() {
       });
 
       if (err?.response?.data?.message === "Pool not found.") {
-        setErrorMessage("Bolão não encontrado");
-        return;
-      }
+    toast.error("Bolão não encontrado");
+    return;
+    }
 
-      if (err?.response?.data?.message === "You already joined this pool.") {
-        setErrorMessage("Você já está nesse bolão");
-        return;
-      }
+    if (err?.response?.data?.message === "You already joined this pool.") {
+      toast.error("Você já está nesse bolão");
+      return;
+    }
 
-      if (err?.response?.status === 404) {
-        setErrorMessage("Bolão não encontrado");
-        return;
-      }
+    if (err?.response?.status === 404) {
+      toast.error("Bolão não encontrado");
+      return;
+    }
 
-      setErrorMessage("Não foi possível entrar no bolão");
+    toast.error("Não foi possível entrar no bolão");
+
     } finally {
       setIsLoading(false);
     }

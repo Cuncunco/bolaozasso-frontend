@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -17,10 +18,10 @@ export default function Register() {
   async function handleRegister(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      setErrorMessage("Preencha todos os campos.");
-      return;
-    }
+   if (!name.trim() || !email.trim() || !password.trim()) {
+  toast.error("Preencha todos os campos.");
+  return;
+}
 
     try {
       setIsLoading(true);
@@ -49,7 +50,7 @@ export default function Register() {
         error?.response?.data?.message ||
         "Não foi possível criar a conta";
 
-      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
