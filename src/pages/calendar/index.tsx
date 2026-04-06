@@ -2,6 +2,8 @@ import { calendar } from "../../constants/Calendar";
 import { CardDay } from "../../components/CardDay";
 
 export default function Calendar() {
+  const isMobile = window.innerWidth <= 640;
+
   return (
     <main
       style={{
@@ -14,18 +16,19 @@ export default function Calendar() {
           width: "100%",
           maxWidth: "1200px",
           margin: "0 auto",
-          paddingTop: "24px",
-          paddingBottom: "24px",
+          paddingTop: isMobile ? "12px" : "24px",
+          paddingBottom: isMobile ? "12px" : "24px",
           display: "grid",
-          gap: "20px",
+          gap: isMobile ? "14px" : "20px",
         }}
       >
         <h1
           style={{
             color: "#fff",
-            fontSize: "64px",
+            fontSize: "clamp(26px, 7vw, 48px)",
             textAlign: "center",
             margin: 0,
+            letterSpacing: "0.04em",
           }}
         >
           CALENDÁRIO

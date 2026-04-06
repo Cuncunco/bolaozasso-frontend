@@ -7,6 +7,7 @@ type Props = {
 
 export function CardDay({ card }: Props) {
   const isMobile = window.innerWidth <= 640;
+  const isSmallMobile = window.innerWidth <= 420;
 
   return (
     <section
@@ -14,7 +15,7 @@ export function CardDay({ card }: Props) {
         backgroundColor: "#111827",
         border: "1px solid #374151",
         borderRadius: "20px",
-        padding: "22px",
+        padding: isSmallMobile ? "14px" : isMobile ? "16px" : "22px",
       }}
     >
       <div
@@ -22,14 +23,14 @@ export function CardDay({ card }: Props) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "18px",
+          marginBottom: isMobile ? "12px" : "18px",
           gap: "12px",
           flexWrap: "wrap",
         }}
       >
         <h2
           style={{
-            fontSize: "clamp(28px, 9vw, 50px)",
+            fontSize: "clamp(22px, 8vw, 42px)",
             color: "#fff",
             margin: 0,
           }}
@@ -41,7 +42,7 @@ export function CardDay({ card }: Props) {
           style={{
             color: "#F7DD43",
             fontWeight: 700,
-            fontSize: "clamp(28px, 9vw, 50px)",
+            fontSize: "clamp(22px, 8vw, 42px)",
           }}
         >
           {card.date}
@@ -60,11 +61,11 @@ export function CardDay({ card }: Props) {
             style={{
               backgroundColor: "#1f2937",
               borderRadius: "14px",
-              padding: "16px 18px",
+              padding: isMobile ? "12px 12px" : "16px 18px",
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 120px 1fr",
               alignItems: "center",
-              gap: "14px",
+              gap: isMobile ? "10px" : "14px",
               minHeight: isMobile ? "auto" : "200px",
             }}
           >
@@ -74,7 +75,7 @@ export function CardDay({ card }: Props) {
             style={{
                 color: "#F7DD43",
                 fontWeight: 700,
-                fontSize: "clamp(34px, 11vw, 64px)",
+                fontSize: "clamp(24px, 9vw, 52px)",
                 whiteSpace: "nowrap",
                 textAlign: "center",
             }}

@@ -1,15 +1,18 @@
-import { flags } from "../utils/Flags";
+import { getFlagSrc } from "../utils/Flags";
 
 type Props = {
   team?: string;
   align?: "left" | "right";
 };
 
-const FLAG_SIZE = 120;
-const FONT_SIZE = 40;
-const GAP_SIZE = 12;
-
 export function TeamFlag({ team, align = "left" }: Props) {
+  const isMobile = window.innerWidth <= 640;
+  const isSmallMobile = window.innerWidth <= 420;
+
+  const FLAG_SIZE = isSmallMobile ? 52 : isMobile ? 68 : 120;
+  const FONT_SIZE = isSmallMobile ? 16 : isMobile ? 22 : 40;
+  const GAP_SIZE = isSmallMobile ? 8 : 12;
+
   if (!team) {
     return (
       <div
@@ -33,28 +36,25 @@ export function TeamFlag({ team, align = "left" }: Props) {
     );
   }
 
-  const src = flags[team];
+  const src = getFlagSrc(team);
   const label = team.replaceAll("-", " ");
 
-  const imageElement = src ? (
+  const imageElement = (
     <img
       src={src}
       alt={team}
+      loading="lazy"
+      onError={(e) => {
+        // Fallback (prevents broken image icon from "killing" the UI).
+        (e.currentTarget as HTMLImageElement).style.display = "none";
+      }}
       style={{
         width: `${FLAG_SIZE}px`,
         height: `${FLAG_SIZE}px`,
         objectFit: "contain",
         flexShrink: 0,
-      }}
-    />
-  ) : (
-    <div
-      style={{
-        width: `${FLAG_SIZE}px`,
-        height: `${FLAG_SIZE}px`,
-        borderRadius: "999px",
-        backgroundColor: "#374151",
-        flexShrink: 0,
+        filter: "none",
+        opacity: 1,
       }}
     />
   );
@@ -69,6 +69,7 @@ export function TeamFlag({ team, align = "left" }: Props) {
         overflow: "hidden",
         textOverflow: "ellipsis",
         textTransform: "capitalize",
+        minWidth: 0,
       }}
     >
       {label}
