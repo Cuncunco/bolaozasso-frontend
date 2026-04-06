@@ -12,7 +12,11 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Removido color-scheme: light dark — conflitava com o tema manual via data-theme */
+  /*
+    Help mobile browsers avoid "auto darkening" / color adjustments that can
+    make images (including SVG <img>) look washed out.
+  */
+  color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #02140f;
 
@@ -26,8 +30,16 @@
   --bg: #f2f2f2;
   --card: #ffffff;
   --text: #111111;
+  color-scheme: light;
   color: #213547;
   background-color: #f2f2f2;
+}
+
+/* Safety net: ensure assets aren't dimmed by filters */
+img,
+svg {
+  filter: none;
+  opacity: 1;
 }
 
 a {

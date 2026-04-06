@@ -12,10 +12,11 @@ export function CardDay({ card }: Props) {
   return (
     <section
       style={{
-        backgroundColor: "#111827",
-        border: "1px solid #374151",
+        backgroundColor: "#0b1220",
+        border: "1px solid rgba(255,255,255,0.10)",
         borderRadius: "20px",
         padding: isSmallMobile ? "14px" : isMobile ? "16px" : "22px",
+        boxShadow: "0 18px 40px rgba(0,0,0,0.22)",
       }}
     >
       <div
@@ -59,7 +60,8 @@ export function CardDay({ card }: Props) {
           <div
             key={`${card.date}-${index}-${game.hour}`}
             style={{
-              backgroundColor: "#1f2937",
+              backgroundColor: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: "14px",
               padding: isMobile ? "12px 12px" : "16px 18px",
               display: "grid",
@@ -78,6 +80,7 @@ export function CardDay({ card }: Props) {
                 fontSize: "clamp(24px, 9vw, 52px)",
                 whiteSpace: "nowrap",
                 textAlign: "center",
+                textShadow: "0 2px 18px rgba(247,221,67,0.20)",
             }}
             >
             {game.hour}
