@@ -15,6 +15,7 @@ type PoolProps = {
 
 export default function Pools() {
   const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 640;
 
   const [isLoading, setIsLoading] = useState(true);
   const [pools, setPools] = useState<PoolProps[]>([]);
@@ -41,10 +42,9 @@ export default function Pools() {
   return (
     <main
       style={{
-        minHeight: "100vh",
         backgroundColor: "transparent",
         color: "#fff",
-        padding: "24px",
+        padding: isMobile ? "12px" : "24px",
       }}
     >
       <div
@@ -66,7 +66,7 @@ export default function Pools() {
         >
           <h1
             style={{
-              fontSize: "32px",
+              fontSize: "clamp(24px, 6vw, 32px)",
               fontWeight: 700,
             }}
           >
@@ -80,9 +80,10 @@ export default function Pools() {
               color: "#111827",
               border: "none",
               borderRadius: "10px",
-              padding: "12px 16px",
+              padding: isMobile ? "10px 12px" : "12px 16px",
               fontWeight: 700,
               cursor: "pointer",
+              width: isMobile ? "100%" : "auto",
             }}
           >
             Buscar bolão por código
@@ -142,14 +143,14 @@ export default function Pools() {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: "16px",
+                    gap: isMobile ? "8px" : "16px",
                     flexWrap: "wrap",
                   }}
                 >
                   <div>
                     <h2
                       style={{
-                        fontSize: "20px",
+                        fontSize: "clamp(18px, 4.5vw, 20px)",
                         fontWeight: 700,
                         marginBottom: "6px",
                       }}

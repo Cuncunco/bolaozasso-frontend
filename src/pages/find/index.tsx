@@ -8,6 +8,7 @@ export default function Find() {
   const [code, setCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const isMobile = window.innerWidth <= 640;
 
   const navigate = useNavigate();
 
@@ -64,12 +65,11 @@ export default function Find() {
   return (
     <main
     style={{
-        minHeight: "calc(100vh - 48px)",
         color: "#fff",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: "24px",
+        paddingTop: isMobile ? "12px" : "24px",
   }}
 >
       <div
@@ -80,14 +80,14 @@ export default function Find() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          paddingTop: "24px",
+          paddingTop: isMobile ? "12px" : "24px",
         }}
       >
         <h1
           style={{
-            fontSize: "28px",
+            fontSize: "clamp(22px, 5vw, 28px)",
             textAlign: "center",
-            marginBottom: "24px",
+            marginBottom: isMobile ? "16px" : "24px",
             lineHeight: 1.3,
           }}
         >

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 export default function NewPool() {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const isMobile = window.innerWidth <= 640;
   async function handlePoolCreate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -34,7 +35,6 @@ export default function NewPool() {
   return (
     <main
       style={{
-        minHeight: "100vh",
         backgroundColor: "transparent",
         color: "#fff",
       }}
@@ -47,25 +47,25 @@ export default function NewPool() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          paddingTop: "24px",
+          paddingTop: isMobile ? "12px" : "24px",
         }}
       >
         <img
           src="/logo.svg"
           alt="Bolãozasso"
           style={{
-            width: "400px",
+            width: isMobile ? "240px" : "400px",
             maxWidth: "100%",
             height: "auto",
-            marginBottom: "24px",
+            marginBottom: isMobile ? "16px" : "24px",
           }}
         />
 
         <h1
           style={{
-            fontSize: "28px",
+            fontSize: "clamp(22px, 5vw, 28px)",
             textAlign: "center",
-            marginBottom: "24px",
+            marginBottom: isMobile ? "16px" : "24px",
             lineHeight: 1.3,
           }}
         >

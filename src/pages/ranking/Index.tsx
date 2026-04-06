@@ -29,6 +29,7 @@ function getPositionDisplay(position: number) {
 export default function Ranking() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 640;
 
   const [isLoading, setIsLoading] = useState(true);
   const [pool, setPool] = useState<PoolType | null>(null);
@@ -88,7 +89,7 @@ export default function Ranking() {
           }}
         >
           <div>
-            <h1 style={{ fontSize: "32px", marginBottom: "6px" }}>
+            <h1 style={{ fontSize: "clamp(24px, 6vw, 32px)", marginBottom: "6px" }}>
               Ranking do grupo
             </h1>
             <p style={{ color: "#b7c2bc" }}>
@@ -149,9 +150,9 @@ export default function Ranking() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "100px 1fr 120px",
+              gridTemplateColumns: isMobile ? "70px 1fr 80px" : "100px 1fr 120px",
                 gap: "12px",
-                padding: "16px 20px",
+              padding: isMobile ? "14px 12px" : "16px 20px",
                 backgroundColor: "#15281f",
                 fontWeight: 700,
               }}
@@ -169,9 +170,9 @@ export default function Ranking() {
                   key={item.userId}
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "100px 1fr 120px",
+                    gridTemplateColumns: isMobile ? "70px 1fr 80px" : "100px 1fr 120px",
                     gap: "12px",
-                    padding: "16px 20px",
+                    padding: isMobile ? "14px 12px" : "16px 20px",
                     borderTop: "1px solid #294136",
                     alignItems: "center",
                     backgroundColor: isTop3 ? "#132018" : "transparent",
@@ -180,7 +181,7 @@ export default function Ranking() {
                   <span
                     style={{
                       fontWeight: 700,
-                      fontSize: item.position <= 3 ? "28px" : "18px",
+                      fontSize: item.position <= 3 ? (isMobile ? "22px" : "28px") : (isMobile ? "16px" : "18px"),
                     }}
                   >
                     {getPositionDisplay(item.position)}
@@ -199,8 +200,8 @@ export default function Ranking() {
                         src={item.user.avatarUrl}
                         alt={item.user.name ?? "Participante"}
                         style={{
-                          width: "42px",
-                          height: "42px",
+                          width: isMobile ? "34px" : "42px",
+                          height: isMobile ? "34px" : "42px",
                           borderRadius: "999px",
                           objectFit: "cover",
                         }}
@@ -208,8 +209,8 @@ export default function Ranking() {
                     ) : (
                       <div
                         style={{
-                          width: "42px",
-                          height: "42px",
+                          width: isMobile ? "34px" : "42px",
+                          height: isMobile ? "34px" : "42px",
                           borderRadius: "999px",
                           backgroundColor: "#294136",
                           display: "flex",

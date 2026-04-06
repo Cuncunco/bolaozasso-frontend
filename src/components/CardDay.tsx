@@ -6,6 +6,8 @@ type Props = {
 };
 
 export function CardDay({ card }: Props) {
+  const isMobile = window.innerWidth <= 640;
+
   return (
     <section
       style={{
@@ -27,7 +29,7 @@ export function CardDay({ card }: Props) {
       >
         <h2
           style={{
-            fontSize: "50px",
+            fontSize: "clamp(28px, 9vw, 50px)",
             color: "#fff",
             margin: 0,
           }}
@@ -39,7 +41,7 @@ export function CardDay({ card }: Props) {
           style={{
             color: "#F7DD43",
             fontWeight: 700,
-            fontSize: "50px",
+            fontSize: "clamp(28px, 9vw, 50px)",
           }}
         >
           {card.date}
@@ -60,10 +62,10 @@ export function CardDay({ card }: Props) {
               borderRadius: "14px",
               padding: "16px 18px",
               display: "grid",
-              gridTemplateColumns: "1fr 120px 1fr",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 120px 1fr",
               alignItems: "center",
               gap: "14px",
-              minHeight: "200px",
+              minHeight: isMobile ? "auto" : "200px",
             }}
           >
             <TeamFlag team={game.player1} align="left" />
@@ -72,7 +74,7 @@ export function CardDay({ card }: Props) {
             style={{
                 color: "#F7DD43",
                 fontWeight: 700,
-                fontSize: "64px",
+                fontSize: "clamp(34px, 11vw, 64px)",
                 whiteSpace: "nowrap",
                 textAlign: "center",
             }}

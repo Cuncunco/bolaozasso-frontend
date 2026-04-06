@@ -32,6 +32,8 @@ export function GuessGameCard({
   isSaving = false,
   isOwner = false,
 }: GameCardProps) {
+  const isMobile = window.innerWidth <= 640;
+
   return (
     <div
       style={{
@@ -68,8 +70,8 @@ export function GuessGameCard({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 86px 86px 1fr",
-          gap: "16px",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 86px 86px 1fr",
+          gap: isMobile ? "12px" : "16px",
           alignItems: "center",
         }}
       >
@@ -90,6 +92,7 @@ export function GuessGameCard({
             fontSize: "28px",
             fontWeight: 700,
             outline: "none",
+            justifySelf: isMobile ? "center" : "auto",
           }}
         />
 
@@ -108,6 +111,7 @@ export function GuessGameCard({
             fontSize: "28px",
             fontWeight: 700,
             outline: "none",
+            justifySelf: isMobile ? "center" : "auto",
           }}
         />
 

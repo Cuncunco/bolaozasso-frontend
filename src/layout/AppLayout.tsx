@@ -84,7 +84,7 @@ export default function AppLayout() {
           align-items: center;
           justify-content: space-around;
           flex-shrink: 0;
-          padding: 0 60px 0 12px;
+          padding: 0 64px 0 12px;
         }
 
         .nav-link {
@@ -130,6 +130,7 @@ export default function AppLayout() {
           .app-nav {
             height: 70px;
             padding: 0 52px 0 8px;
+            gap: 6px;
           }
 
           .nav-link {
@@ -166,14 +167,16 @@ export default function AppLayout() {
 
           .app-nav {
             height: 64px;
-            padding: 0 44px 0 4px;
-            justify-content: space-evenly;
+            padding: 0 42px 0 6px;
+            justify-content: space-between;
+            gap: 2px;
           }
 
           .nav-link {
             font-size: 10px;
-            min-width: 44px;
+            min-width: 0;
             gap: 2px;
+            flex: 1;
           }
 
           .nav-icon {
@@ -182,6 +185,21 @@ export default function AppLayout() {
 
           .app-content {
             padding: 12px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .app-nav {
+            height: 60px;
+            padding: 0 38px 0 4px;
+          }
+
+          .nav-link {
+            font-size: 0;
+          }
+
+          .nav-icon {
+            font-size: 17px;
           }
         }
       `}</style>

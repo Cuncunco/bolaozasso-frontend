@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 
 export default function Profile() {
   const { user, signOut } = useAuth();
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 480;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [name, setName] = useState(user?.name ?? "");
@@ -75,7 +77,7 @@ export default function Profile() {
           maxWidth: "980px",
           margin: "0 auto",
           display: "grid",
-          gap: "24px",
+          gap: isMobile ? "16px" : "24px",
         }}
       >
         <section
@@ -83,15 +85,15 @@ export default function Profile() {
             background: "linear-gradient(135deg, #123f30 0%, #0d2d22 100%)",
             border: "1px solid rgba(247, 221, 67, 0.12)",
             borderRadius: "24px",
-            padding: "32px",
+            padding: isMobile ? "18px" : "32px",
             boxShadow: "0 18px 40px rgba(0,0,0,0.20)",
           }}
         >
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "220px 1fr",
-              gap: "28px",
+              gridTemplateColumns: isMobile ? "1fr" : "220px 1fr",
+              gap: isMobile ? "18px" : "28px",
               alignItems: "center",
             }}
           >
@@ -105,8 +107,8 @@ export default function Profile() {
             >
               <div
                 style={{
-                  width: "170px",
-                  height: "170px",
+                  width: isSmallMobile ? "120px" : isMobile ? "140px" : "170px",
+                  height: isSmallMobile ? "120px" : isMobile ? "140px" : "170px",
                   borderRadius: "999px",
                   overflow: "hidden",
                   border: "4px solid rgba(247, 221, 67, 0.85)",
@@ -141,7 +143,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <h1 style={{ fontSize: "42px", marginBottom: "10px", lineHeight: 1.1 }}>
+              <h1 style={{ fontSize: isSmallMobile ? "28px" : isMobile ? "34px" : "42px", marginBottom: "10px", lineHeight: 1.1 }}>
                 Meu perfil
               </h1>
 
@@ -211,7 +213,7 @@ export default function Profile() {
         <section
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns: isSmallMobile ? "1fr" : isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
             gap: "18px",
           }}
         >
