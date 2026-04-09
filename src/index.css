@@ -16,7 +16,7 @@
     Help mobile browsers avoid "auto darkening" / color adjustments that can
     make images (including SVG <img>) look washed out.
   */
-  color-scheme: dark;
+  color-scheme: light-dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #02140f;
 
