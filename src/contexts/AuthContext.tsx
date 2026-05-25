@@ -28,6 +28,7 @@ type AuthContextType = {
   signIn: (data: SignInData) => Promise<void>;
   signUp: (data: SignUpData) => Promise<void>;
   signOut: () => void;
+  updateUser: (data: Partial<User>) => void;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -124,6 +125,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     delete api.defaults.headers.common.Authorization;
   }
 
+  function updateUser(data: Partial<User>) {
+    setUser((prev) => (prev ? { ...prev, ...data } : prev));
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -134,6 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         signIn,
         signUp,
         signOut,
+        updateUser,
       }}
     >
       {children}

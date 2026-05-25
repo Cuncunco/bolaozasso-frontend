@@ -1,89 +1,68 @@
 import type { Card } from "../constants/Calendar";
 import { TeamFlag } from "./TeamFlag";
 
-type Props = {
-  card: Card;
-};
+type Props = { card: Card };
 
 export function CardDay({ card }: Props) {
   const isMobile = window.innerWidth <= 640;
-  const isSmallMobile = window.innerWidth <= 420;
 
   return (
-    <section
-      style={{
-        backgroundColor: "#0b1220",
-        border: "1px solid rgba(255,255,255,0.10)",
-        borderRadius: "20px",
-        padding: isSmallMobile ? "14px" : isMobile ? "16px" : "22px",
-        boxShadow: "0 18px 40px rgba(0,0,0,0.22)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: isMobile ? "12px" : "18px",
-          gap: "12px",
-          flexWrap: "wrap",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "clamp(22px, 8vw, 42px)",
-            color: "#fff",
-            margin: 0,
-          }}
-        >
+    <section style={{
+      background: "#0e0e18",
+      border: "1px solid rgba(247,221,67,0.12)",
+      borderRadius: 20,
+      padding: isMobile ? "16px" : "22px",
+      boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    }}>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: isMobile ? 12 : 18,
+        gap: 12,
+        flexWrap: "wrap",
+      }}>
+        <h2 style={{ fontSize: "clamp(22px, 7vw, 40px)", color: "#fff", margin: 0, fontWeight: 800 }}>
           {card.day}
         </h2>
-
-        <span
-          style={{
-            color: "#F7DD43",
-            fontWeight: 700,
-            fontSize: "clamp(22px, 8vw, 42px)",
-          }}
-        >
+        <span style={{
+          color: "#F7DD43",
+          fontWeight: 800,
+          fontSize: "clamp(20px, 6vw, 36px)",
+          textShadow: "0 0 16px rgba(247,221,67,0.3)",
+        }}>
           {card.date}
         </span>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gap: "12px",
-        }}
-      >
+      <div style={{ display: "grid", gap: 10 }}>
         {card.games.map((game, index) => (
           <div
             key={`${card.date}-${index}-${game.hour}`}
             style={{
-              backgroundColor: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "14px",
-              padding: isMobile ? "12px 12px" : "16px 18px",
+              background: "rgba(247,221,67,0.025)",
+              border: "1px solid rgba(247,221,67,0.08)",
+              borderRadius: 14,
+              padding: isMobile ? "12px" : "16px 18px",
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 120px 1fr",
               alignItems: "center",
-              gap: isMobile ? "10px" : "14px",
-              minHeight: isMobile ? "auto" : "200px",
+              gap: isMobile ? 10 : 14,
+              minHeight: isMobile ? "auto" : 180,
+              transition: "border-color 0.2s",
             }}
           >
             <TeamFlag team={game.player1} align="left" />
 
-            <div
-            style={{
-                color: "#F7DD43",
-                fontWeight: 700,
-                fontSize: "clamp(24px, 9vw, 52px)",
-                whiteSpace: "nowrap",
-                textAlign: "center",
-                textShadow: "0 2px 18px rgba(247,221,67,0.20)",
-            }}
-            >
-            {game.hour}
+            <div style={{
+              color: "#F7DD43",
+              fontWeight: 800,
+              fontSize: "clamp(22px, 8vw, 48px)",
+              whiteSpace: "nowrap",
+              textAlign: "center",
+              textShadow: "0 0 20px rgba(247,221,67,0.4)",
+            }}>
+              {game.hour}
             </div>
 
             <TeamFlag team={game.player2} align="right" />

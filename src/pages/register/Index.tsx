@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import type { CSSProperties, FormEvent } from "react";
+import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -11,45 +11,22 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleRegister(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-   if (!name.trim() || !email.trim() || !password.trim()) {
-  toast.error("Preencha todos os campos.");
-  return;
-}
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
 
     try {
       setIsLoading(true);
-      setErrorMessage("");
-
-      console.log("Tentando cadastrar:", {
-        name: name.trim(),
-        email: email.trim(),
-        passwordLength: password.trim().length,
-      });
-
-      await signUp({
-        name: name.trim(),
-        email: email.trim(),
-        password: password.trim(),
-      });
-
+      await signUp({ name: name.trim(), email: email.trim(), password: password.trim() });
       navigate("/pools", { replace: true });
     } catch (error: any) {
-      console.error("ERRO FINAL NO REGISTER:", error);
-      console.error("REGISTER response:", error?.response);
-      console.error("REGISTER data:", error?.response?.data);
-      console.error("REGISTER status:", error?.response?.status);
-
-      const msg =
-        error?.response?.data?.message ||
-        "Não foi possível criar a conta";
-
+      const msg = error?.response?.data?.message || "Não foi possível criar a conta";
       toast.error(msg);
     } finally {
       setIsLoading(false);
@@ -57,137 +34,133 @@ export default function Register() {
   }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#111827",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "480px",
-          backgroundColor: "#1f2937",
-          padding: "40px",
-          borderRadius: "16px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src="/logo.svg"
-          alt="Bolãozasso"
-          style={logoStyle}
-        />
+    <>
+      <style>{`
+        .auth-page {
+          min-height: 100vh;
+          background: #06060b;
+          background-image: radial-gradient(circle at 50% 30%, rgba(247,221,67,0.06) 0%, transparent 60%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+        .auth-card {
+          width: 100%;
+          max-width: 440px;
+          background: #0e0e18;
+          border: 1px solid rgba(247,221,67,0.18);
+          border-radius: 20px;
+          padding: 40px;
+          box-shadow: 0 0 40px rgba(247,221,67,0.06), 0 24px 64px rgba(0,0,0,0.6);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .auth-input {
+          width: 100%;
+          padding: 14px 16px;
+          border-radius: 12px;
+          border: 1px solid rgba(247,221,67,0.14);
+          background: #0a0a14;
+          color: #fff;
+          font-size: 15px;
+          font-family: inherit;
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .auth-input:focus {
+          border-color: rgba(247,221,67,0.5);
+          box-shadow: 0 0 0 3px rgba(247,221,67,0.08);
+        }
+        .auth-input::placeholder { color: #3a3a50; }
+        .auth-btn-primary {
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          border: none;
+          background: #F7DD43;
+          color: #06060b;
+          font-weight: 800;
+          font-size: 15px;
+          font-family: inherit;
+          cursor: pointer;
+          letter-spacing: 0.05em;
+          box-shadow: 0 0 20px rgba(247,221,67,0.25);
+          transition: opacity 0.2s, box-shadow 0.2s;
+        }
+        .auth-btn-primary:hover:not(:disabled) { box-shadow: 0 0 32px rgba(247,221,67,0.45); }
+        .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .auth-btn-secondary {
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          border: 1px solid rgba(247,221,67,0.18);
+          background: transparent;
+          color: #fff;
+          font-weight: 700;
+          font-size: 15px;
+          font-family: inherit;
+          cursor: pointer;
+          text-align: center;
+          text-decoration: none;
+          display: block;
+          letter-spacing: 0.04em;
+          transition: border-color 0.2s, background 0.2s;
+        }
+        .auth-btn-secondary:hover {
+          border-color: rgba(247,221,67,0.4);
+          background: rgba(247,221,67,0.05);
+        }
+        @media (max-width: 480px) {
+          .auth-card { padding: 28px 20px; border-radius: 14px; }
+        }
+      `}</style>
 
-        <h1 style={{ color: "#fff", fontSize: "28px", marginBottom: "6px" }}>
-          Criar conta
-        </h1>
+      <div className="auth-page">
+        <div className="auth-card">
+          <img src="/logo.svg" alt="Bolãozasso" style={{ width: 200, marginBottom: 24 }} />
 
-        <p style={{ color: "#9ca3af", marginBottom: "24px" }}>
-          Crie sua conta para entrar nos bolões.
-        </p>
+          <h1 style={{ color: "#fff", fontSize: 26, fontWeight: 800, marginBottom: 6, textAlign: "center" }}>
+            Criar conta
+          </h1>
+          <p style={{ color: "#4a5060", marginBottom: 28, textAlign: "center", fontSize: 14 }}>
+            Crie sua conta para entrar nos bolões.
+          </p>
 
-        <form onSubmit={handleRegister} style={formStyle}>
-          <input
-            type="text"
-            placeholder="Nome"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={inputStyle}
-          />
+          <form onSubmit={handleRegister} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
+            <input
+              className="auth-input"
+              type="text"
+              placeholder="Nome"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <input
+              className="auth-input"
+              type="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              className="auth-input"
+              type="password"
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
-          />
+            <button type="submit" disabled={isLoading} className="auth-btn-primary" style={{ marginTop: 4 }}>
+              {isLoading ? "Criando..." : "CRIAR CONTA"}
+            </button>
 
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
-          />
-
-          <button type="submit" disabled={isLoading} style={primaryButton}>
-            {isLoading ? "Criando..." : "CRIAR CONTA"}
-          </button>
-
-          <Link to="/login" style={secondaryButton}>
-            JÁ TENHO CONTA
-          </Link>
-        </form>
-
-        {errorMessage && (
-          <div
-            style={{
-              width: "100%",
-              marginTop: "16px",
-              padding: "12px",
-              borderRadius: "10px",
-              backgroundColor: "#7f1d1d",
-              color: "#fecaca",
-              textAlign: "center",
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
+            <Link to="/login" className="auth-btn-secondary">
+              JÁ TENHO CONTA
+            </Link>
+          </form>
+        </div>
       </div>
-    </main>
+    </>
   );
 }
-
-const logoStyle: CSSProperties = {
-  width: "220px",
-  marginBottom: "20px",
-};
-
-const formStyle: CSSProperties = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-};
-
-const inputStyle: CSSProperties = {
-  width: "100%",
-  padding: "14px",
-  borderRadius: "10px",
-  border: "1px solid #374151",
-  backgroundColor: "#111827",
-  color: "#fff",
-  fontSize: "16px",
-};
-
-const primaryButton: CSSProperties = {
-  width: "100%",
-  padding: "14px",
-  borderRadius: "10px",
-  border: "none",
-  backgroundColor: "#F7DD43",
-  color: "#111827",
-  fontWeight: 700,
-  cursor: "pointer",
-};
-
-const secondaryButton: CSSProperties = {
-  width: "100%",
-  padding: "14px",
-  borderRadius: "10px",
-  border: "1px solid #4b5563",
-  textAlign: "center",
-  textDecoration: "none",
-  color: "#fff",
-  fontWeight: 700,
-};
